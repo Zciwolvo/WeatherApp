@@ -1,9 +1,8 @@
 ﻿using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
+using System.Text.Json;
 
 namespace WeatherService
 {
@@ -18,8 +17,10 @@ namespace WeatherService
                 var response = await httpClient.GetAsync(apiURL);
                 if (response.IsSuccessStatusCode)
                 {
-                    var json = await response.Content.ReadAsStringAsync();
-                    var data = JsonConvert.DeserializeObject<Forecast>(json);
+                    var root = await response.Content.ReadAsStringAsync();
+                    JsonSerializerOptions options = new JsonSerializerOptions();
+                    options.PropertyNameCaseInsensitive = true;
+                    var data = System.Text.Json.JsonSerializer.Deserialize<Forecast>(root, options);
                     return data;
 
                 }
