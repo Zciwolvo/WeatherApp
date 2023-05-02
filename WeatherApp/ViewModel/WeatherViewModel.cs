@@ -2,13 +2,15 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
+using System.Net.Http;
 using System.Runtime.CompilerServices;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Markup;
 using System.Windows.Media.Imaging;
-using WeatherService;
+using WeatherApp.ViewModel;
 
 namespace WeatherApp
 {
@@ -89,25 +91,46 @@ namespace WeatherApp
 
         public BitmapImage bitmap = new BitmapImage();
 
-        public BitmapImage[] CustomButtonBitmap;
+        public BitmapImage[] CustomButtonBitmap { get; set; }
 
         public ObservableCollection<Button> DayButtons { get; set; }
 
-        public string CorrectLocation { get; private set; }
-
         public bool Success = false;
 
+        private static async Task<Forecast> GetApiResponse(string location, string KEY)
+        {
 
+            var apiURL = $"http://api.WeatherAPI.com/v1/forecast.json?key={KEY}&q={location}&days=6";
+            using (var httpClient = new HttpClient())
+            {
+                var response = await httpClient.GetAsync(apiURL);
+                if (response.IsSuccessStatusCode)
+                {
+                    var json = await response.Content.ReadAsStringAsync();
+                    JsonSerializerOptions options = new JsonSerializerOptions();
+                    options.PropertyNameCaseInsensitive = true;
+                    var data = System.Text.Json.JsonSerializer.Deserialize<Forecast>(json, options);
+                    return data;
+
+                }
+                else
+                {
+                    Console.WriteLine($"Failed to get data from API. Status code: {response.StatusCode}");
+                    return null;
+                }
+            }
+        }
         public async Task InitializeDataAsync()
         {
             string KEY = "180bc412ee754f4ba9c160652233103";
-            var data = await WeatherService.WeatherService.GetApiResponse(Location, KEY);
+            var data = await GetApiResponse(Location, KEY);
 
             if (data != null)
             {
                 var DayData = data.forecast.forecastday[_currentDay];
                 var HourData = DayData.hour[_currentHour];
-                var LocationData = data.forecast.location;
+                var LocationData = data.location;
+                Location = LocationData.name;
                 StatusLabel = DayData.day.condition.text;
                 bitmap = new BitmapImage();
                 bitmap.BeginInit();
@@ -135,27 +158,32 @@ namespace WeatherApp
                 CustomButtonBitmap = new BitmapImage[DayData.hour.Count];
                 DayButtons = new ObservableCollection<Button>();
                 
-                for (int i = 0; i <= 2; i++)
+                for (int i = 0; i <= data.forecast.forecastday.Count-1; i++)
                 {
                     tempC[i] = (data.forecast.forecastday[i].day.avgtemp_c).ToString() + "°" + " " + "C";
                     tempF[i] = (data.forecast.forecastday[i].day.avgtemp_f).ToString() + "°" + " " + "F";
                     CustomButtonBitmap[i] = new BitmapImage(new Uri("https:" + data.forecast.forecastday[i].day.condition.icon, UriKind.Absolute));
                     CustomLabel[i] = (_currentTime.AddDays(i)).ToString("ddd", new CultureInfo("en-EN")) + " " + (_unit ? data.forecast.forecastday[i].day.avgtemp_c : data.forecast.forecastday[i].day.avgtemp_f) + (_unit ? " C" : " F");
-
                 }
 
-                for (int i = 0; i < 2; i++)
+                for (int i = 0; i <= data.forecast.forecastday.Count-1; i++)
                 {
+                   /* DayButtons.Add(new CustomButton
+                    {
+                        Bitmap = CustomButtonBitmap[i],
+                        Label = CustomLabel[i],
+                        Tag = i,
+                    });*/
                     Button DayButton = new Button();
                     DayButton.Tag = "DayButton";
                     DayButton.Content = new StackPanel()
                     {
                         Orientation = Orientation.Vertical,
                         Children =
-                    {
-                        new Image()
-                        {
-                                    Source = CustomButtonBitmap[i]
+                            {
+                                new Image()
+                                {
+                                    Source = CustomButtonBitmap[i],
                                 },
                                 new Label()
                                 {
@@ -166,8 +194,9 @@ namespace WeatherApp
                     };
                     DayButton.Width = 80;
                     DayButton.Height = 100;
-                    DayButton.Click += DayButton_Click;
+                    DayButton.Click += DayButtonClick;
                     DayButtons.Add(DayButton);
+
 
                 }
                 Success = true;
@@ -192,12 +221,17 @@ namespace WeatherApp
         {
             _currentDay = Day;
         }
-        private void DayButton_Click(object sender, RoutedEventArgs e)
+
+        public void UpdateCurrentDay(int Day)
+        {
+            _currentDay = Day;
+        }
+        private void DayButtonClick(object sender, RoutedEventArgs e)
         {
             var clickedButton = (Button)sender;
             var clickedStack = (StackPanel)clickedButton.Content;
             var clickedLabel = (Label)clickedStack.Children[1];
-            _currentDay = (int)clickedLabel.Tag; 
+            UpdateCurrentDay((int)clickedLabel.Tag);
         }
     }
 }

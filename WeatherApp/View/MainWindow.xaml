@@ -69,6 +69,10 @@
                                         Height="{Binding Height}"
                                         Click="{Binding Click}">
                                     <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="4*"/>
+                                            <RowDefinition Height="1*"/>
+                                        </Grid.RowDefinitions>
                                         <Image Grid.Row="0" Source="{Binding Image}" Stretch="Uniform" />
                                         <Label Grid.Row="1" Content="{Binding Content}" Tag="{Binding Tag}" VerticalAlignment="Center" HorizontalAlignment="Center" />
                                     </Grid>

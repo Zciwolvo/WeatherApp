@@ -16,7 +16,7 @@ namespace WeatherApp
         {
             InitializeComponent();
             viewModel = new WeatherViewModel();
-            DataContext = viewModel;
+            DataContext = viewModel.DayButtons;
         }
 
         private async void Button_Click(object sender, RoutedEventArgs e)
@@ -27,7 +27,6 @@ namespace WeatherApp
                 await viewModel.InitializeDataAsync();
                 _enabled = true;
                 if (viewModel.Success) EnableLabels();
-                DataContext = viewModel;
             }
 
         }
@@ -72,6 +71,14 @@ namespace WeatherApp
             Precip.Content = "Precip: " + viewModel.Precip;
             HourSlider.Visibility = System.Windows.Visibility.Visible;
             HourSlider.Value = viewModel.CurrentHour;
+            DataContext = viewModel;
+        }
+        private void DayButtonClick(object sender, RoutedEventArgs e)
+        {
+            var clickedButton = (Button)sender;
+            var clickedStack = (StackPanel)clickedButton.Content;
+            var clickedLabel = (Label)clickedStack.Children[1];
+            viewModel.UpdateCurrentDay((int)clickedLabel.Tag);
         }
     }
 }
