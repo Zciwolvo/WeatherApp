@@ -9,14 +9,13 @@ namespace WeatherApp
 {
     public partial class MainWindow : Window
     {
-        private readonly WeatherViewModel viewModel;
+        private readonly WeatherApp.ViewModel.WeatherViewModel viewModel;
         private bool _enabled = false;
 
         public MainWindow()
         {
             InitializeComponent();
-            viewModel = new WeatherViewModel();
-            DataContext = viewModel.DayButtons;
+            viewModel = new WeatherApp.ViewModel.WeatherViewModel();
         }
 
         private async void Button_Click(object sender, RoutedEventArgs e)

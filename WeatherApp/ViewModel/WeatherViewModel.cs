@@ -12,7 +12,7 @@ using System.Windows.Markup;
 using System.Windows.Media.Imaging;
 using WeatherApp.ViewModel;
 
-namespace WeatherApp
+namespace WeatherApp.ViewModel
 {
     public class WeatherViewModel : INotifyPropertyChanged
     {
@@ -93,7 +93,7 @@ namespace WeatherApp
 
         public BitmapImage[] CustomButtonBitmap { get; set; }
 
-        public ObservableCollection<Button> DayButtons { get; set; }
+        public ObservableCollection<CustomButton> DayButtons { get; set; }
 
         public bool Success = false;
 
@@ -156,7 +156,7 @@ namespace WeatherApp
                 tempF = new string[DayData.hour.Count];
                 CustomLabel = new string[DayData.hour.Count];
                 CustomButtonBitmap = new BitmapImage[DayData.hour.Count];
-                DayButtons = new ObservableCollection<Button>();
+                DayButtons = new ObservableCollection<CustomButton>();
                 
                 for (int i = 0; i <= data.forecast.forecastday.Count-1; i++)
                 {
@@ -168,12 +168,13 @@ namespace WeatherApp
 
                 for (int i = 0; i <= data.forecast.forecastday.Count-1; i++)
                 {
-                   /* DayButtons.Add(new CustomButton
+                    DayButtons.Add(new CustomButton
                     {
                         Bitmap = CustomButtonBitmap[i],
                         Label = CustomLabel[i],
                         Tag = i,
-                    });*/
+                    });
+                    /*
                     Button DayButton = new Button();
                     DayButton.Tag = "DayButton";
                     DayButton.Content = new StackPanel()
@@ -195,7 +196,7 @@ namespace WeatherApp
                     DayButton.Width = 80;
                     DayButton.Height = 100;
                     DayButton.Click += DayButtonClick;
-                    DayButtons.Add(DayButton);
+                    DayButtons.Add(DayButton);*/
 
 
                 }

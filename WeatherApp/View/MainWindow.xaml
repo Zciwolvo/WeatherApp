@@ -3,23 +3,31 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:WeatherApp"
+        xmlns:local="clr-namespace:WeatherApp" xmlns:local1="clr-namespace:WeatherApp.ViewModel"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800"
         ResizeMode="NoResize">
     <Window.Resources>
-        <ControlTemplate x:Key="CustomButtonTemplate" TargetType="{x:Type Button}">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="4*" />
-                    <RowDefinition Height="1*" />
-                </Grid.RowDefinitions>
-                <Image Grid.Row="0" Source="{TemplateBinding Tag}" />
-                <TextBlock Grid.Row="1" Text="{TemplateBinding Content}" />
-            </Grid>
-        </ControlTemplate>
+        <Style TargetType="{x:Type local1:CustomButton}">
+                <Setter Property="Width" Value="80" />
+                <Setter Property="Height" Value="100" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type local1:CustomButton}">
+                        <Grid>
+                            <Image Source="{TemplateBinding Bitmap}" Stretch="UniformToFill" />
+                            <TextBlock Text="{TemplateBinding Label}"
+                               VerticalAlignment="Bottom"
+                               HorizontalAlignment="Center"
+                               Foreground="White"
+                               FontSize="16"/>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Window.Resources>
-    <StackPanel>
+            <StackPanel>
         <Grid Height="150">
             <Grid Width="280" Height="130" HorizontalAlignment="Left" Margin="0,0,0,20">
                 <TextBlock  HorizontalAlignment="Left" Margin="25,15,0,0" TextWrapping="Wrap" VerticalAlignment="Top" RenderTransformOrigin="0.546,4.483" Width="250"><Run Text="Enter location"/><Run Language="pl-pl" Text=":"/></TextBlock>
@@ -59,24 +67,15 @@
                     <ItemsControl ItemsSource="{Binding DayButtons}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
-                                <WrapPanel />
+                                <StackPanel Orientation="Horizontal" />
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Button Tag="{Binding Tag}"
-                                        Width="{Binding Width}"
-                                        Height="{Binding Height}"
-                                        Click="{Binding Click}">
-                                    <Grid>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="4*"/>
-                                            <RowDefinition Height="1*"/>
-                                        </Grid.RowDefinitions>
-                                        <Image Grid.Row="0" Source="{Binding Image}" Stretch="Uniform" />
-                                        <Label Grid.Row="1" Content="{Binding Content}" Tag="{Binding Tag}" VerticalAlignment="Center" HorizontalAlignment="Center" />
-                                    </Grid>
-                                </Button>
+                                <local1:CustomButton Bitmap="{Binding Bitmap}"
+                                Label="{Binding Label}"
+                                Tag="{Binding Tag}"
+                                Click="DayButtonClick"/>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
