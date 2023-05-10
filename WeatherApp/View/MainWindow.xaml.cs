@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Markup;
 using System.Windows.Media.Imaging;
+using WeatherApp.ViewModel;
 
 namespace WeatherApp
 {
@@ -74,10 +75,9 @@ namespace WeatherApp
         }
         private void DayButtonClick(object sender, RoutedEventArgs e)
         {
-            var clickedButton = (Button)sender;
-            var clickedStack = (StackPanel)clickedButton.Content;
-            var clickedLabel = (Label)clickedStack.Children[1];
-            viewModel.UpdateCurrentDay((int)clickedLabel.Tag);
+            var clickedButton = (CustomButton)sender;
+            var clickedTag = (int)clickedButton.Tag;
+            viewModel.UpdateCurrentDay((int)clickedTag);
         }
     }
 }

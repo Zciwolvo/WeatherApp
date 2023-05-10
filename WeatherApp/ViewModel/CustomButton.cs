@@ -66,4 +66,14 @@ namespace WeatherApp.ViewModel
             }
         }
     }
+    public class CustomContentControl : ContentControl
+    {
+        static CustomContentControl()
+        {
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(CustomContentControl), new FrameworkPropertyMetadata(typeof(CustomContentControl)));
+        }
+    }
+
 }
+
+

@@ -100,7 +100,7 @@ namespace WeatherApp.ViewModel
         private static async Task<Forecast> GetApiResponse(string location, string KEY)
         {
 
-            var apiURL = $"http://api.WeatherAPI.com/v1/forecast.json?key={KEY}&q={location}&days=6";
+            var apiURL = $"http://api.WeatherAPI.com/v1/forecast.json?key={KEY}&q={location}&days=3";
             using (var httpClient = new HttpClient())
             {
                 var response = await httpClient.GetAsync(apiURL);
@@ -174,29 +174,7 @@ namespace WeatherApp.ViewModel
                         Label = CustomLabel[i],
                         Tag = i,
                     });
-                    /*
-                    Button DayButton = new Button();
-                    DayButton.Tag = "DayButton";
-                    DayButton.Content = new StackPanel()
-                    {
-                        Orientation = Orientation.Vertical,
-                        Children =
-                            {
-                                new Image()
-                                {
-                                    Source = CustomButtonBitmap[i],
-                                },
-                                new Label()
-                                {
-                                    Content = CustomLabel[i],
-                                    Tag = i,
-                                }
-                            }
-                    };
-                    DayButton.Width = 80;
-                    DayButton.Height = 100;
-                    DayButton.Click += DayButtonClick;
-                    DayButtons.Add(DayButton);*/
+                    DayButtons[i].Click += DayButtonClick;
 
 
                 }
@@ -229,10 +207,9 @@ namespace WeatherApp.ViewModel
         }
         private void DayButtonClick(object sender, RoutedEventArgs e)
         {
-            var clickedButton = (Button)sender;
-            var clickedStack = (StackPanel)clickedButton.Content;
-            var clickedLabel = (Label)clickedStack.Children[1];
-            UpdateCurrentDay((int)clickedLabel.Tag);
+            var clickedButton = (CustomButton)sender;
+            var clickedTag = (int)clickedButton.Tag;
+            UpdateCurrentDay((int)clickedTag);
         }
     }
 }

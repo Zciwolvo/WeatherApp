@@ -9,19 +9,22 @@
         ResizeMode="NoResize">
     <Window.Resources>
         <Style TargetType="{x:Type local1:CustomButton}">
-                <Setter Property="Width" Value="80" />
-                <Setter Property="Height" Value="100" />
+            <Setter Property="Width" Value="80" />
+            <Setter Property="Height" Value="100" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type local1:CustomButton}">
-                        <Grid>
-                            <Image Source="{TemplateBinding Bitmap}" Stretch="UniformToFill" />
-                            <TextBlock Text="{TemplateBinding Label}"
-                               VerticalAlignment="Bottom"
-                               HorizontalAlignment="Center"
-                               Foreground="White"
-                               FontSize="16"/>
-                        </Grid>
+                        <Border BorderThickness="1" BorderBrush="Black">
+                            <Grid>
+                                <TextBlock Text="{TemplateBinding Label}"
+                                   VerticalAlignment="Top"
+                                   HorizontalAlignment="Center"
+                                   Foreground="Black"
+                                   FontSize="16"
+                                   Margin="0,10,0,0"/>
+                                <Image Source="{TemplateBinding Bitmap}" Stretch="Uniform" />
+                            </Grid>
+                        </Border>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
@@ -67,7 +70,7 @@
                     <ItemsControl ItemsSource="{Binding DayButtons}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
-                                <StackPanel Orientation="Horizontal" />
+                                <StackPanel Orientation="Horizontal"/>
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
@@ -75,7 +78,7 @@
                                 <local1:CustomButton Bitmap="{Binding Bitmap}"
                                 Label="{Binding Label}"
                                 Tag="{Binding Tag}"
-                                Click="DayButtonClick"/>
+                                Click="{Binding Click}"/>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
