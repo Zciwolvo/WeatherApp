@@ -57,7 +57,6 @@ namespace WeatherApp
             TempFeelsLikeSign.Content = viewModel.TempFeelsLikeSign;
             StatusLabel.Content = viewModel.StatusLabel;
             statusIcon.Source = viewModel.bitmap;
-
             DataGrid.Visibility = System.Windows.Visibility.Visible;
             Sunrise.Content = "Sunrise: " + viewModel.Sunrise;
             Sunset.Content = "Sunset: " + viewModel.Sunset;
@@ -71,13 +70,19 @@ namespace WeatherApp
             Precip.Content = "Precip: " + viewModel.Precip;
             HourSlider.Visibility = System.Windows.Visibility.Visible;
             HourSlider.Value = viewModel.CurrentHour;
-            DataContext = viewModel;
+            for (int i = 0; i < 3; i++)
+            {
+                Button button = (Button)viewModel.StackPanel.Children[i * 2];
+                button.Click += DayButtonClick;
+            }
         }
-        private void DayButtonClick(object sender, RoutedEventArgs e)
+        private async void DayButtonClick(object sender, RoutedEventArgs e)
         {
-            var clickedButton = (CustomButton)sender;
+            var clickedButton = (Button)sender;
             var clickedTag = (int)clickedButton.Tag;
             viewModel.UpdateCurrentDay((int)clickedTag);
+            await viewModel.InitializeDataAsync();
+            EnableLabels();
         }
     }
 }

@@ -118,6 +118,7 @@
     <Compile Include="Model\Forecastday.cs" />
     <Compile Include="Model\Hour.cs" />
     <Compile Include="Model\Location.cs" />
+    <Compile Include="ViewModel\CustomContentControl.cs" />
     <Compile Include="ViewModel\CustomButton.cs" />
     <Compile Include="ViewModel\WeatherViewModel.cs" />
     <Compile Include="View\MainWindow.xaml.cs">

@@ -94,6 +94,7 @@ namespace WeatherApp.ViewModel
         public BitmapImage[] CustomButtonBitmap { get; set; }
 
         public ObservableCollection<CustomButton> DayButtons { get; set; }
+        public StackPanel StackPanel { get; set; }
 
         public bool Success = false;
 
@@ -165,18 +166,29 @@ namespace WeatherApp.ViewModel
                     CustomButtonBitmap[i] = new BitmapImage(new Uri("https:" + data.forecast.forecastday[i].day.condition.icon, UriKind.Absolute));
                     CustomLabel[i] = (_currentTime.AddDays(i)).ToString("ddd", new CultureInfo("en-EN")) + " " + (_unit ? data.forecast.forecastday[i].day.avgtemp_c : data.forecast.forecastday[i].day.avgtemp_f) + (_unit ? " C" : " F");
                 }
-
-                for (int i = 0; i <= data.forecast.forecastday.Count-1; i++)
+                StackPanel = new StackPanel();
+                StackPanel.Orientation = Orientation.Horizontal;
+                for (int i = 0; i <= data.forecast.forecastday.Count - 1; i++)
                 {
-                    DayButtons.Add(new CustomButton
-                    {
-                        Bitmap = CustomButtonBitmap[i],
-                        Label = CustomLabel[i],
-                        Tag = i,
-                    });
-                    DayButtons[i].Click += DayButtonClick;
+                    Border border = new Border();
+                    border.Width = 100;
+                    border.Height = 80;
 
+                    StackPanel stackPanel = new StackPanel();
+                    stackPanel.Orientation = Orientation.Vertical;
 
+                    Button button = new Button();
+                    button.Content = CustomLabel[i];
+                    button.Tag = i;
+                    stackPanel.Children.Add(button);
+
+                    Label label = new Label();
+                    label.Content = Unit ? tempC[i] : tempF[i];
+                    stackPanel.Children.Add(label);
+
+                    border.Child = stackPanel;
+
+                    StackPanel.Children.Add(border);
                 }
                 Success = true;
 
@@ -204,12 +216,6 @@ namespace WeatherApp.ViewModel
         public void UpdateCurrentDay(int Day)
         {
             _currentDay = Day;
-        }
-        private void DayButtonClick(object sender, RoutedEventArgs e)
-        {
-            var clickedButton = (CustomButton)sender;
-            var clickedTag = (int)clickedButton.Tag;
-            UpdateCurrentDay((int)clickedTag);
         }
     }
 }
