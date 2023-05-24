@@ -34,7 +34,7 @@ namespace WeatherApp.ViewModel
             }
         }
 
-        public int CurrentHour 
+        public int CurrentHour
         {
             get { return _currentHour; }
         }
@@ -93,7 +93,7 @@ namespace WeatherApp.ViewModel
 
         public BitmapImage[] CustomButtonBitmap { get; set; }
 
-        public ObservableCollection<CustomButton> DayButtons { get; set; }
+        public ObservableCollection<Button> DayButtons { get; set; }
         public StackPanel StackPanel { get; set; }
 
         public bool Success = false;
@@ -157,38 +157,42 @@ namespace WeatherApp.ViewModel
                 tempF = new string[DayData.hour.Count];
                 CustomLabel = new string[DayData.hour.Count];
                 CustomButtonBitmap = new BitmapImage[DayData.hour.Count];
-                DayButtons = new ObservableCollection<CustomButton>();
-                
-                for (int i = 0; i <= data.forecast.forecastday.Count-1; i++)
+                DayButtons = new ObservableCollection<Button>();
+
+                for (int i = 0; i <= 2; i++)
                 {
                     tempC[i] = (data.forecast.forecastday[i].day.avgtemp_c).ToString() + "°" + " " + "C";
                     tempF[i] = (data.forecast.forecastday[i].day.avgtemp_f).ToString() + "°" + " " + "F";
                     CustomButtonBitmap[i] = new BitmapImage(new Uri("https:" + data.forecast.forecastday[i].day.condition.icon, UriKind.Absolute));
                     CustomLabel[i] = (_currentTime.AddDays(i)).ToString("ddd", new CultureInfo("en-EN")) + " " + (_unit ? data.forecast.forecastday[i].day.avgtemp_c : data.forecast.forecastday[i].day.avgtemp_f) + (_unit ? " C" : " F");
+
                 }
-                StackPanel = new StackPanel();
-                StackPanel.Orientation = Orientation.Horizontal;
-                for (int i = 0; i <= data.forecast.forecastday.Count - 1; i++)
+
+                for (int i = 0; i < 2; i++)
                 {
-                    Border border = new Border();
-                    border.Width = 100;
-                    border.Height = 80;
+                    Button DayButton = new Button();
+                    DayButton.Tag = "DayButton";
+                    DayButton.Content = new StackPanel()
+                    {
+                        Orientation = Orientation.Vertical,
+                        Children =
+                    {
+                        new Image()
+                        {
+                                    Source = CustomButtonBitmap[i]
+                                },
+                                new Label()
+                                {
+                                    Content = CustomLabel[i],
+                                    Tag = i,
+                                }
+                            }
+                    };
+                    DayButton.Width = 80;
+                    DayButton.Height = 100;
+                    //DayButton.Click += DayButton_Click;
+                    DayButtons.Add(DayButton);
 
-                    StackPanel stackPanel = new StackPanel();
-                    stackPanel.Orientation = Orientation.Vertical;
-
-                    Button button = new Button();
-                    button.Content = CustomLabel[i];
-                    button.Tag = i;
-                    stackPanel.Children.Add(button);
-
-                    Label label = new Label();
-                    label.Content = Unit ? tempC[i] : tempF[i];
-                    stackPanel.Children.Add(label);
-
-                    border.Child = stackPanel;
-
-                    StackPanel.Children.Add(border);
                 }
                 Success = true;
 

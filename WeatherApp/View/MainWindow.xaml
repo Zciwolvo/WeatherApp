@@ -7,6 +7,18 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800"
         ResizeMode="NoResize">
+    <Window.Resources>
+        <ControlTemplate x:Key="CustomButtonTemplate" TargetType="{x:Type Button}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="4*" />
+                    <RowDefinition Height="1*" />
+                </Grid.RowDefinitions>
+                <Image Grid.Row="0" Source="{TemplateBinding Tag}" />
+                <TextBlock Grid.Row="1" Text="{TemplateBinding Content}" />
+            </Grid>
+        </ControlTemplate>
+    </Window.Resources>
     <StackPanel>
         <Grid Height="150">
             <Grid Width="280" Height="130" HorizontalAlignment="Left" Margin="0,0,0,20">
@@ -43,11 +55,28 @@
                 <Grid Height="100" VerticalAlignment="Top">
                     <Slider VerticalAlignment="Center" HorizontalAlignment="Left" Width="480" x:Name="HourSlider" Visibility="Hidden" Minimum="0" Maximum="23" Value="0" TickFrequency="100" ValueChanged="Handle_Slider"/>
                 </Grid>
-                <Window>
-                    <Grid>
-                        <ContentControl Content="{Binding StackPanel}" />
-                    </Grid>
-                </Window>
+                <Grid Height="100" VerticalAlignment="Bottom">
+                    <ItemsControl ItemsSource="{Binding DayButtons}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Button Tag="{Binding Tag}"
+                                        Width="{Binding Width}"
+                                        Height="{Binding Height}"
+                                        Click="{Binding Click}">
+                                    <Grid>
+                                        <Image Grid.Row="0" Source="{Binding Image}" Stretch="Uniform" />
+                                        <Label Grid.Row="1" Content="{Binding Content}" Tag="{Binding Tag}" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                                    </Grid>
+                                </Button>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Grid>
             </Grid>
 
         </Grid>

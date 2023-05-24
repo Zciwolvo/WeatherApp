@@ -4,19 +4,19 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Markup;
 using System.Windows.Media.Imaging;
-using WeatherApp.ViewModel;
 
 namespace WeatherApp
 {
     public partial class MainWindow : Window
     {
-        private readonly WeatherApp.ViewModel.WeatherViewModel viewModel;
+        private readonly ViewModel.WeatherViewModel viewModel;
         private bool _enabled = false;
 
         public MainWindow()
         {
             InitializeComponent();
-            viewModel = new WeatherApp.ViewModel.WeatherViewModel();
+            viewModel = new ViewModel.WeatherViewModel();
+            DataContext = viewModel;
         }
 
         private async void Button_Click(object sender, RoutedEventArgs e)
@@ -27,6 +27,7 @@ namespace WeatherApp
                 await viewModel.InitializeDataAsync();
                 _enabled = true;
                 if (viewModel.Success) EnableLabels();
+                DataContext = viewModel;
             }
 
         }
@@ -57,6 +58,7 @@ namespace WeatherApp
             TempFeelsLikeSign.Content = viewModel.TempFeelsLikeSign;
             StatusLabel.Content = viewModel.StatusLabel;
             statusIcon.Source = viewModel.bitmap;
+
             DataGrid.Visibility = System.Windows.Visibility.Visible;
             Sunrise.Content = "Sunrise: " + viewModel.Sunrise;
             Sunset.Content = "Sunset: " + viewModel.Sunset;
@@ -70,19 +72,6 @@ namespace WeatherApp
             Precip.Content = "Precip: " + viewModel.Precip;
             HourSlider.Visibility = System.Windows.Visibility.Visible;
             HourSlider.Value = viewModel.CurrentHour;
-            for (int i = 0; i < 3; i++)
-            {
-                Button button = (Button)viewModel.StackPanel.Children[i * 2];
-                button.Click += DayButtonClick;
-            }
-        }
-        private async void DayButtonClick(object sender, RoutedEventArgs e)
-        {
-            var clickedButton = (Button)sender;
-            var clickedTag = (int)clickedButton.Tag;
-            viewModel.UpdateCurrentDay((int)clickedTag);
-            await viewModel.InitializeDataAsync();
-            EnableLabels();
         }
     }
 }
