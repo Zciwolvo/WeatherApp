@@ -8,9 +8,12 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Markup;
 using System.Windows.Media.Imaging;
 using WeatherApp.ViewModel;
+using GalaSoft.MvvmLight.Command;
+
 
 namespace WeatherApp.ViewModel
 {
@@ -93,11 +96,18 @@ namespace WeatherApp.ViewModel
 
         public BitmapImage[] CustomButtonBitmap { get; set; }
 
-        public ObservableCollection<Button> DayButtons { get; set; }
-        public StackPanel StackPanel { get; set; }
 
         public bool Success = false;
 
+        public class CustomButtonModel
+        {
+            public string ImageUrl { get; set; }
+            public string LabelContent { get; set; }
+            public int Tag { get; set; }
+            public ICommand ClickCommand { get; set; }
+        }
+
+        public ObservableCollection<CustomButtonModel> DayButtons { get; set; }
         private static async Task<Forecast> GetApiResponse(string location, string KEY)
         {
 
@@ -157,48 +167,34 @@ namespace WeatherApp.ViewModel
                 tempF = new string[DayData.hour.Count];
                 CustomLabel = new string[DayData.hour.Count];
                 CustomButtonBitmap = new BitmapImage[DayData.hour.Count];
-                DayButtons = new ObservableCollection<Button>();
+                DayButtons = new ObservableCollection<CustomButtonModel>();
 
                 for (int i = 0; i <= 2; i++)
                 {
                     tempC[i] = (data.forecast.forecastday[i].day.avgtemp_c).ToString() + "°" + " " + "C";
                     tempF[i] = (data.forecast.forecastday[i].day.avgtemp_f).ToString() + "°" + " " + "F";
                     CustomButtonBitmap[i] = new BitmapImage(new Uri("https:" + data.forecast.forecastday[i].day.condition.icon, UriKind.Absolute));
-                    CustomLabel[i] = (_currentTime.AddDays(i)).ToString("ddd", new CultureInfo("en-EN")) + " " + (_unit ? data.forecast.forecastday[i].day.avgtemp_c : data.forecast.forecastday[i].day.avgtemp_f) + (_unit ? " C" : " F");
-
+                    CustomLabel[i] = (_currentTime.AddDays(i)).ToString("ddd", new CultureInfo("en-EN")) + " " + (Unit ? data.forecast.forecastday[i].day.avgtemp_c : data.forecast.forecastday[i].day.avgtemp_f) + (Unit ? " C" : " F");
                 }
 
-                for (int i = 0; i < 2; i++)
+                for (int i = 0; i <= 2; i++)
                 {
-                    Button DayButton = new Button();
-                    DayButton.Tag = "DayButton";
-                    DayButton.Content = new StackPanel()
+                    CustomButtonModel buttonModel = new CustomButtonModel()
                     {
-                        Orientation = Orientation.Vertical,
-                        Children =
-                    {
-                        new Image()
-                        {
-                                    Source = CustomButtonBitmap[i]
-                                },
-                                new Label()
-                                {
-                                    Content = CustomLabel[i],
-                                    Tag = i,
-                                }
-                            }
-                    };
-                    DayButton.Width = 80;
-                    DayButton.Height = 100;
-                    //DayButton.Click += DayButton_Click;
-                    DayButtons.Add(DayButton);
+                        ImageUrl = "https:" + data.forecast.forecastday[i].day.condition.icon,
+                        LabelContent = (_currentTime.AddDays(i)).ToString("ddd", new CultureInfo("en-EN")) + " " + (Unit ? data.forecast.forecastday[i].day.avgtemp_c : data.forecast.forecastday[i].day.avgtemp_f) + (Unit ? " C" : " F"),
+                        Tag = i,
+                };
 
+                    DayButtons.Add(buttonModel);
                 }
                 Success = true;
 
             }
             else Success = false;
         }
+
+
 
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
@@ -221,5 +217,6 @@ namespace WeatherApp.ViewModel
         {
             _currentDay = Day;
         }
+
     }
 }

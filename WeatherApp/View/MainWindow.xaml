@@ -7,18 +7,6 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800"
         ResizeMode="NoResize">
-    <Window.Resources>
-        <ControlTemplate x:Key="CustomButtonTemplate" TargetType="{x:Type Button}">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="4*" />
-                    <RowDefinition Height="1*" />
-                </Grid.RowDefinitions>
-                <Image Grid.Row="0" Source="{TemplateBinding Tag}" />
-                <TextBlock Grid.Row="1" Text="{TemplateBinding Content}" />
-            </Grid>
-        </ControlTemplate>
-    </Window.Resources>
     <StackPanel>
         <Grid Height="150">
             <Grid Width="280" Height="130" HorizontalAlignment="Left" Margin="0,0,0,20">
@@ -64,14 +52,11 @@
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Button Tag="{Binding Tag}"
-                                        Width="{Binding Width}"
-                                        Height="{Binding Height}"
-                                        Click="{Binding Click}">
-                                    <Grid>
-                                        <Image Grid.Row="0" Source="{Binding Image}" Stretch="Uniform" />
-                                        <Label Grid.Row="1" Content="{Binding Content}" Tag="{Binding Tag}" VerticalAlignment="Center" HorizontalAlignment="Center" />
-                                    </Grid>
+                                <Button Width="80" Height="100" Command="{Binding ClickCommand}" CommandParameter="{Binding Tag}">
+                                    <StackPanel>
+                                        <Image Source="{Binding ImageUrl}" Stretch="Uniform" />
+                                        <Label x:Name="Day1Label" Content="{Binding LabelContent}" Tag="{Binding Tag}" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                                    </StackPanel>
                                 </Button>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>

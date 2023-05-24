@@ -1,7 +1,9 @@
-﻿using System;
+﻿using GalaSoft.MvvmLight.Command;
+using System;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Markup;
 using System.Windows.Media.Imaging;
 
@@ -11,12 +13,20 @@ namespace WeatherApp
     {
         private readonly ViewModel.WeatherViewModel viewModel;
         private bool _enabled = false;
+        public ICommand DayButtonClickCommand { get; private set; }
 
         public MainWindow()
         {
             InitializeComponent();
             viewModel = new ViewModel.WeatherViewModel();
-            DataContext = viewModel;
+
+            DayButtonClickCommand = new RelayCommand<object>(async delegate (object parameter)
+            {
+                int day = (int)parameter;
+                viewModel.UpdateCurrentDay(day);
+                await viewModel.InitializeDataAsync();
+                if (viewModel.Success) EnableLabels();
+            });
         }
 
         private async void Button_Click(object sender, RoutedEventArgs e)
@@ -27,7 +37,6 @@ namespace WeatherApp
                 await viewModel.InitializeDataAsync();
                 _enabled = true;
                 if (viewModel.Success) EnableLabels();
-                DataContext = viewModel;
             }
 
         }
@@ -47,6 +56,7 @@ namespace WeatherApp
             await viewModel.InitializeDataAsync();
             EnableLabels();
         }
+
         private void EnableLabels()
         {
             locationLabel.Content = viewModel.Location;
@@ -58,7 +68,6 @@ namespace WeatherApp
             TempFeelsLikeSign.Content = viewModel.TempFeelsLikeSign;
             StatusLabel.Content = viewModel.StatusLabel;
             statusIcon.Source = viewModel.bitmap;
-
             DataGrid.Visibility = System.Windows.Visibility.Visible;
             Sunrise.Content = "Sunrise: " + viewModel.Sunrise;
             Sunset.Content = "Sunset: " + viewModel.Sunset;
@@ -72,6 +81,12 @@ namespace WeatherApp
             Precip.Content = "Precip: " + viewModel.Precip;
             HourSlider.Visibility = System.Windows.Visibility.Visible;
             HourSlider.Value = viewModel.CurrentHour;
+            foreach (var button in viewModel.DayButtons)
+            {
+                button.ClickCommand = DayButtonClickCommand;
+            }
+
+            DataContext = viewModel;
         }
     }
 }
