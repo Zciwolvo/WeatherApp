@@ -94,9 +94,9 @@ namespace WeatherApp.ViewModel
 
         public BitmapImage bitmap = new BitmapImage();
 
-        public BitmapImage[] CustomButtonBitmap { get; set; }
-
-
+        public string[] CustomButtonBitmap { get; set; }
+        public int[] Tags { get; set; } 
+        public int DaysLen { get; set; }
         public bool Success = false;
 
         public class CustomButtonModel
@@ -163,31 +163,25 @@ namespace WeatherApp.ViewModel
                 SnowChance = HourData.chance_of_snow + "%";
                 Precip = Unit ? $"{HourData.precip_mm} mm" : $"{HourData.precip_in} in";
                 Date = DateTime.Parse(DayData.date).ToString("dddd, dd MMMM yyyy", CultureInfo.InvariantCulture);
-                tempC = new string[DayData.hour.Count];
-                tempF = new string[DayData.hour.Count];
-                CustomLabel = new string[DayData.hour.Count];
-                CustomButtonBitmap = new BitmapImage[DayData.hour.Count];
+                DaysLen = data.forecast.forecastday.Count;
                 DayButtons = new ObservableCollection<CustomButtonModel>();
+                tempC = new string[DaysLen];
+                tempF = new string[DaysLen];
+                CustomLabel = new string[DaysLen];
+                CustomButtonBitmap = new string[DaysLen];
+                Tags = new int[DaysLen];
+               
 
-                for (int i = 0; i <= 2; i++)
+                for (int i = 0; i < DaysLen; i++)
                 {
+                    Console.WriteLine(DaysLen);
                     tempC[i] = (data.forecast.forecastday[i].day.avgtemp_c).ToString() + "°" + " " + "C";
                     tempF[i] = (data.forecast.forecastday[i].day.avgtemp_f).ToString() + "°" + " " + "F";
-                    CustomButtonBitmap[i] = new BitmapImage(new Uri("https:" + data.forecast.forecastday[i].day.condition.icon, UriKind.Absolute));
-                    CustomLabel[i] = (_currentTime.AddDays(i)).ToString("ddd", new CultureInfo("en-EN")) + " " + (Unit ? data.forecast.forecastday[i].day.avgtemp_c : data.forecast.forecastday[i].day.avgtemp_f) + (Unit ? " C" : " F");
+                    CustomLabel[i] = (_currentTime.AddDays(i)).ToString("ddd", new CultureInfo("en-EN")) + " " + (Unit ? tempC[i] : tempF[i]);
+                    CustomButtonBitmap[i] = "https:" + data.forecast.forecastday[i].day.condition.icon;
+                    Tags[i] = i;
                 }
-
-                for (int i = 0; i <= 2; i++)
-                {
-                    CustomButtonModel buttonModel = new CustomButtonModel()
-                    {
-                        ImageUrl = "https:" + data.forecast.forecastday[i].day.condition.icon,
-                        LabelContent = (_currentTime.AddDays(i)).ToString("ddd", new CultureInfo("en-EN")) + " " + (Unit ? data.forecast.forecastday[i].day.avgtemp_c : data.forecast.forecastday[i].day.avgtemp_f) + (Unit ? " C" : " F"),
-                        Tag = i,
-                };
-
-                    DayButtons.Add(buttonModel);
-                }
+         
                 Success = true;
 
             }

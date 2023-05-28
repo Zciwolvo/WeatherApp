@@ -1,11 +1,13 @@
 ﻿using GalaSoft.MvvmLight.Command;
 using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Markup;
 using System.Windows.Media.Imaging;
+using static WeatherApp.ViewModel.WeatherViewModel;
 
 namespace WeatherApp
 {
@@ -13,7 +15,7 @@ namespace WeatherApp
     {
         private readonly ViewModel.WeatherViewModel viewModel;
         private bool _enabled = false;
-        public ICommand DayButtonClickCommand { get; private set; }
+        public ICommand DayButtonClickCommand{ get; set; }  
 
         public MainWindow()
         {
@@ -25,7 +27,7 @@ namespace WeatherApp
                 int day = (int)parameter;
                 viewModel.UpdateCurrentDay(day);
                 await viewModel.InitializeDataAsync();
-                if (viewModel.Success) EnableLabels();
+                EnableLabels();
             });
         }
 
@@ -81,11 +83,20 @@ namespace WeatherApp
             Precip.Content = "Precip: " + viewModel.Precip;
             HourSlider.Visibility = System.Windows.Visibility.Visible;
             HourSlider.Value = viewModel.CurrentHour;
-            foreach (var button in viewModel.DayButtons)
+            viewModel.DayButtons.Clear();
+            for (int i = 0; i < viewModel.DaysLen; i++)
             {
-                button.ClickCommand = DayButtonClickCommand;
-            }
+                CustomButtonModel buttonModel = new CustomButtonModel()
+                {
+                    ImageUrl = viewModel.CustomButtonBitmap[i],
+                    LabelContent = viewModel.CustomLabel[i],
+                    Tag = viewModel.Tags[i],
+                    ClickCommand = DayButtonClickCommand,
+                };
 
+                viewModel.DayButtons.Add(buttonModel);
+            }
+            ButtonsPanel.UpdateLayout();
             DataContext = viewModel;
         }
     }

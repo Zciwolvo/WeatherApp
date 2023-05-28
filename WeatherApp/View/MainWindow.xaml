@@ -43,7 +43,7 @@
                 <Grid Height="100" VerticalAlignment="Top">
                     <Slider VerticalAlignment="Center" HorizontalAlignment="Left" Width="480" x:Name="HourSlider" Visibility="Hidden" Minimum="0" Maximum="23" Value="0" TickFrequency="100" ValueChanged="Handle_Slider"/>
                 </Grid>
-                <Grid Height="100" VerticalAlignment="Bottom">
+                <Grid x:Name="ButtonsPanel" Height="100" VerticalAlignment="Bottom">
                     <ItemsControl ItemsSource="{Binding DayButtons}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
