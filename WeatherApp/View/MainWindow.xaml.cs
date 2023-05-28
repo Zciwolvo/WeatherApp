@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Markup;
 using System.Windows.Media.Imaging;
+using System.Windows.Data;
 using static WeatherApp.ViewModel.WeatherViewModel;
 
 namespace WeatherApp
@@ -21,7 +22,6 @@ namespace WeatherApp
         {
             InitializeComponent();
             viewModel = new ViewModel.WeatherViewModel();
-
             DayButtonClickCommand = new RelayCommand<object>(async delegate (object parameter)
             {
                 int day = (int)parameter;
@@ -83,10 +83,9 @@ namespace WeatherApp
             Precip.Content = "Precip: " + viewModel.Precip;
             HourSlider.Visibility = System.Windows.Visibility.Visible;
             HourSlider.Value = viewModel.CurrentHour;
-            viewModel.DayButtons.Clear();
             for (int i = 0; i < viewModel.DaysLen; i++)
             {
-                CustomButtonModel buttonModel = new CustomButtonModel()
+                ViewModel.CustomButtonModel buttonModel = new ViewModel.CustomButtonModel()
                 {
                     ImageUrl = viewModel.CustomButtonBitmap[i],
                     LabelContent = viewModel.CustomLabel[i],
@@ -96,7 +95,6 @@ namespace WeatherApp
 
                 viewModel.DayButtons.Add(buttonModel);
             }
-            ButtonsPanel.UpdateLayout();
             DataContext = viewModel;
         }
     }

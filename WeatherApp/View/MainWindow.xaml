@@ -55,7 +55,7 @@
                                 <Button Width="80" Height="100" Command="{Binding ClickCommand}" CommandParameter="{Binding Tag}">
                                     <StackPanel>
                                         <Image Source="{Binding ImageUrl}" Stretch="Uniform" />
-                                        <Label x:Name="Day1Label" Content="{Binding LabelContent}" Tag="{Binding Tag}" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                                        <Label  Content="{Binding LabelContent}" Tag="{Binding Tag}" VerticalAlignment="Center" HorizontalAlignment="Center" />
                                     </StackPanel>
                                 </Button>
                             </DataTemplate>

@@ -25,6 +25,7 @@ namespace WeatherApp.ViewModel
         private int _currentHour = DateTime.Now.Hour;
         private bool _unit = true;
 
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         public string Location
@@ -33,7 +34,7 @@ namespace WeatherApp.ViewModel
             set
             {
                 _location = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(_location));
             }
         }
 
@@ -48,9 +49,11 @@ namespace WeatherApp.ViewModel
             set
             {
                 _unit = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(_unit));
             }
         }
+
+
 
         public string[] CustomLabel { get; private set; }
 
@@ -98,14 +101,6 @@ namespace WeatherApp.ViewModel
         public int[] Tags { get; set; } 
         public int DaysLen { get; set; }
         public bool Success = false;
-
-        public class CustomButtonModel
-        {
-            public string ImageUrl { get; set; }
-            public string LabelContent { get; set; }
-            public int Tag { get; set; }
-            public ICommand ClickCommand { get; set; }
-        }
 
         public ObservableCollection<CustomButtonModel> DayButtons { get; set; }
         private static async Task<Forecast> GetApiResponse(string location, string KEY)
@@ -174,16 +169,14 @@ namespace WeatherApp.ViewModel
 
                 for (int i = 0; i < DaysLen; i++)
                 {
-                    Console.WriteLine(DaysLen);
                     tempC[i] = (data.forecast.forecastday[i].day.avgtemp_c).ToString() + "°" + " " + "C";
                     tempF[i] = (data.forecast.forecastday[i].day.avgtemp_f).ToString() + "°" + " " + "F";
                     CustomLabel[i] = (_currentTime.AddDays(i)).ToString("ddd", new CultureInfo("en-EN")) + " " + (Unit ? tempC[i] : tempF[i]);
                     CustomButtonBitmap[i] = "https:" + data.forecast.forecastday[i].day.condition.icon;
                     Tags[i] = i;
                 }
-         
                 Success = true;
-
+                OnPropertyChanged(nameof(DayButtons));
             }
             else Success = false;
         }
@@ -200,7 +193,8 @@ namespace WeatherApp.ViewModel
         }
         public void UpdateUnit()
         {
-            _unit = !_unit;
+            Unit = !_unit;
+            OnPropertyChanged(nameof(Unit));
         }
         public void UpdateLocation(int Day)
         {
