@@ -6,13 +6,7 @@ using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Markup;
 using System.Windows.Media.Imaging;
-using WeatherApp.ViewModel;
-using GalaSoft.MvvmLight.Command;
 
 
 namespace WeatherApp.ViewModel
